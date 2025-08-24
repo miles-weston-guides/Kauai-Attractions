@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Kauai Top 25 Attractions Map</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    #map {
+      height: 100vh;
+      width: 100vw;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <script>
+    // Initialize map centered on Kauai
+    const map = L.map('map').setView([22.05, -159.5], 10);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // JSON dataset
+    const data = {
+      "TopAttractions": [
+        {"name": "Na Pali Coast", "latitude": 22.1750, "longitude": -159.6500, "region": "North Shore", "description": "Dramatic cliffs, accessible via Kalalau Trail (permit required, hawaii.gov/dlnr), boat tours from Eleele, or helicopter. Practice mālama by respecting trails and wildlife."},
+        {"name": "Waimea Canyon", "latitude": 22.0550, "longitude": -159.6650, "region": "West Side", "description": "Grand Canyon of the Pacific, drive from Waimea via Hwy 550. Viewpoints and trails. Stay on paths to mālama the land."},
+        {"name": "Wailua Falls", "latitude": 22.0350, "longitude": -159.3820, "region": "East Side", "description": "Double-tiered waterfall off Hwy 56 near Lihue. Easy lookout access, no hiking needed. Respect barriers for safety."},
+        {"name": "Spouting Horn", "latitude": 21.8846, "longitude": -159.4935, "region": "South Shore", "description": "Blowhole in Poipu with water jets. Free parking, short walk from Lawai Rd. Observe from designated areas."},
+        {"name": "Kilauea Point Lighthouse", "latitude": 22.2316, "longitude": -159.4019, "region": "North Shore", "description": "Historic lighthouse, wildlife refuge. Drive from Kilauea, reservation needed (recreation.gov). Open 10 AM–4 PM, closed Mon/Tue."},
+        {"name": "Hanalei Bay", "latitude": 22.2017, "longitude": -159.5007, "region": "North Shore", "description": "Crescent beach for surfing, kayaking. Access via Kuhio Hwy, parking at Hanalei Beach Park. Respect marine life."},
+        {"name": "Polihale Beach", "latitude": 22.0820, "longitude": -159.7570, "region": "West Side", "description": "Remote beach, 4WD from Hwy 50 near Mana. Check road conditions, mālama by cleaning up."},
+        {"name": "Fern Grotto", "latitude": 22.0450, "longitude": -159.3360, "region": "East Side", "description": "Lush cave via Wailua River boat tour from Wailua. Book via local operators, respect sacred site."},
+        {"name": "Hanapepe Swinging Bridge", "latitude": 21.9100, "longitude": -159.5920, "region": "South Shore", "description": "Historic bridge in Hanapepe town. Walk from Hanapepe Rd, limit 15 people, sway expected."},
+        {"name": "Opaeka’a Falls", "latitude": 22.0580, "longitude": -159.3190, "region": "East Side", "description": "150-ft waterfall off Kuamoo Rd. Easy lookout access, no hiking. Stay behind railings for safety."},
+        {"name": "Tunnels Beach (Makua)", "latitude": 22.2220, "longitude": -159.4650, "region": "North Shore", "description": "Snorkeling spot with coral reefs. Access via Haena, limited parking. Best in summer, check conditions."},
+        {"name": "Kalalau Lookout", "latitude": 22.1460, "longitude": -159.6450, "region": "West Side", "description": "Na Pali Coast views from Koke’e State Park. Drive via Hwy 550, easy lookout access."},
+        {"name": "Koke’e State Park", "latitude": 22.1300, "longitude": -159.6570, "region": "West Side", "description": "Hiking trails, Na Pali views. Access via Hwy 550 from Waimea. Trails range easy to strenuous."},
+        {"name": "Poipu Beach", "latitude": 21.8739, "longitude": -159.4489, "region": "South Shore", "description": "Family-friendly beach for swimming, snorkeling. Access via Poipu Rd, lifeguards present. Watch for monk seals."},
+        {"name": "Queen’s Bath", "latitude": 22.2290, "longitude": -159.4180, "region": "North Shore", "description": "Tide pool near Princeville. Steep trail from Kuhio Hwy, check ocean conditions, dangerous in winter."},
+        {"name": "Hanakapiai Falls", "latitude": 22.1830, "longitude": -159.6000, "region": "North Shore", "description": "300-ft waterfall, 8-mi round-trip hike via Kalalau Trail from Haena. Permit required, strenuous."},
+        {"name": "Kilohana Plantation", "latitude": 21.9680, "longitude": -159.4100, "region": "East Side", "description": "Historic site with train ride, rum tasting. Access via Hwy 50 near Lihue, book tours in advance."},
+        {"name": "McBryde Garden", "latitude": 21.9040, "longitude": -159.5200, "region": "South Shore", "description": "Botanical garden with rare plants. Access via Lawai Rd, guided tours available, book at ntbg.org."},
+        {"name": "Allerton Garden", "latitude": 21.9040, "longitude": -159.5200, "region": "South Shore", "description": "Scenic garden near McBryde. Access via Lawai Rd, book guided tours at ntbg.org."},
+        {"name": "Limahuli Garden", "latitude": 22.2190, "longitude": -159.5760, "region": "North Shore", "description": "Native plant preserve near Haena. Book tours at ntbg.org, respect cultural site."},
+        {"name": "Kauai Coffee Company", "latitude": 21.8930, "longitude": -159.5440, "region": "South Shore", "description": "Largest U.S. coffee farm near Kalaheo. Free tours, access via Hwy 540, open 9 AM–5 PM."},
+        {"name": "Eucalyptus Tree Tunnel", "latitude": 21.8930, "longitude": -159.4900, "region": "South Shore", "description": "Scenic drive on Maluhia Rd to Koloa/Poipu. No parking, slow drive to enjoy."},
+        {"name": "Kauai Museum", "latitude": 21.9550, "longitude": -159.3640, "region": "East Side", "description": "Cultural history in Lihue. Access via Rice St, open 10 AM–5 PM, $15 entry, check kauaimuseum.org."},
+        {"name": "Ninini Point Lighthouse", "latitude": 21.9560, "longitude": -159.3350, "region": "East Side", "description": "Scenic lighthouse near Lihue. Access via Ninini Point St, free, limited parking."},
+        {"name": "Ho’opi’i Falls", "latitude": 22.0960, "longitude": -159.3450, "region": "East Side", "description": "Rainforest waterfall hike near Kapaa. Moderate trail off Kapahi Rd, wear sturdy shoes."}
+      ]
+    };
+
+    // Layer group for attractions
+    const attractionsLayer = L.layerGroup();
+
+    // Custom dark red marker icon
+    const darkRedIcon = L.icon({
+      iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34]
+    });
+
+    // Add attractions with dark red markers
+    data.TopAttractions.forEach(attraction => {
+      L.marker([attraction.latitude, attraction.longitude], {
+        icon: darkRedIcon
+      }).addTo(attractionsLayer).bindPopup(`<b>${attraction.name}</b><br>${attraction.region}<br>${attraction.description}`);
+    });
+
+    // Add layer to map
+    attractionsLayer.addTo(map);
+
+    // Add layer control
+    L.control.layers({}, { 'Top Attractions': attractionsLayer }).addTo(map);
+  </script>
+</body>
+</html>
